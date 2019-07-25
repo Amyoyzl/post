@@ -28,4 +28,9 @@ public class PackController {
     public Pack setPackageState(@PathVariable String id, @RequestParam String state) {
         return packService.setState(id, state);
     }
+
+    @PostMapping
+    public Pack addPackage(@RequestBody Pack pack) {
+        return packService.add(pack);
+    }
 }

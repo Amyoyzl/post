@@ -1,5 +1,6 @@
 package com.oocl.ita.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.ita.model.Pack;
 import com.oocl.ita.servie.PackService;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -15,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(SpringExtension.class)
@@ -98,6 +100,26 @@ public class PackControllerTest {
                 .andExpect(jsonPath("$.state", is(state)));
 
         verify(packService).setState(anyString(), anyString());
+
+    }
+
+    @Test
+    public void should_add_package() throws Exception {
+        Pack pack = new Pack();
+        pack.setId("3412435");
+        pack.setName("test");
+        pack.setPhone("12574474367");
+        pack.setState("未取件");
+
+        when(packService.add(any())).thenReturn(pack);
+        ResultActions resultActions = mvc.perform(post("/packages")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(pack)));
+
+        resultActions.andExpect(jsonPath("$.id", is(pack.getId())))
+                .andExpect(jsonPath("$.state", is(pack.getState())));
+
+        verify(packService).add(any());
 
     }
 

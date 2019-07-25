@@ -31,4 +31,8 @@ public class PackService {
         }
         return null;
     }
+
+    public Pack add(Pack pack) {
+        return repository.save(pack);
+    }
 }
