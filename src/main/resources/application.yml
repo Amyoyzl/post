@@ -22,4 +22,4 @@ spring:
     hibernate:
       ddl-auto: validate
   flyway:
-enabled: true
+    enabled: true

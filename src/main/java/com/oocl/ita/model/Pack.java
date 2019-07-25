@@ -11,6 +11,7 @@ import java.util.Date;
 public class Pack {
 
     @Id
+    @Column(columnDefinition = "char(12)")
     private String id;
     private String name;
     @Column(columnDefinition = "char(11)")
