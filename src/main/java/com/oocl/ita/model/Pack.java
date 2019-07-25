@@ -1,7 +1,6 @@
 package com.oocl.ita.model;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "pack")
