@@ -3,10 +3,7 @@ package com.oocl.ita.controller;
 import com.oocl.ita.model.Pack;
 import com.oocl.ita.servie.PackService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +22,10 @@ public class PackController {
     @GetMapping(params = "state")
     public List<Pack> getPackagesByState(@RequestParam String state) {
         return packService.getByState(state);
+    }
+
+    @PatchMapping(path = "/{id}", params = "state")
+    public Pack setPackageState(@PathVariable String id, @RequestParam String state) {
+        return packService.setState(id, state);
     }
 }

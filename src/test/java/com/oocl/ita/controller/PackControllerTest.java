@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(SpringExtension.class)
@@ -69,8 +70,8 @@ public class PackControllerTest {
         List<Pack> packages = new ArrayList<>();
         packages.add(pack1);
         packages.add(pack2);
-
         String state = "已预约";
+
         when(packService.getByState(state)).thenReturn(packages);
         ResultActions resultActions = mvc.perform(get("/packages").param("state", "已预约"));
 
@@ -78,6 +79,26 @@ public class PackControllerTest {
                 .andExpect(jsonPath("$[1].id", is(packages.get(1).getId())));
 
         verify(packService).getByState(anyString());
+    }
+
+    @Test
+    public void should_set_package_state() throws Exception {
+        Pack pack = new Pack();
+        pack.setId("3412435");
+        pack.setName("test");
+        pack.setPhone("12574474367");
+        pack.setState("已取件");
+        String state = "已取件";
+        String id = "3412435";
+
+        when(packService.setState(id, state)).thenReturn(pack);
+        ResultActions resultActions = mvc.perform(patch("/packages/"+id).param("state", state));
+
+        resultActions.andExpect(jsonPath("$.id", is(pack.getId())))
+                .andExpect(jsonPath("$.state", is(state)));
+
+        verify(packService).setState(anyString(), anyString());
+
     }
 
 }
