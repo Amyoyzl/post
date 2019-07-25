@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(PackController.class)
@@ -51,7 +53,8 @@ public class PackControllerTest {
         when(packService.getAll()).thenReturn(packages);
         ResultActions resultActions = mvc.perform(get("/packages"));
 
-        resultActions.andExpect(jsonPath("$[0].name", is(packages.get(0).getName())))
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is(packages.get(0).getName())))
                 .andExpect(jsonPath("$[1].id", is(packages.get(1).getId())));
 
         verify(packService).getAll();
@@ -77,7 +80,8 @@ public class PackControllerTest {
         when(packService.getByState(state)).thenReturn(packages);
         ResultActions resultActions = mvc.perform(get("/packages").param("state", "已预约"));
 
-        resultActions.andExpect(jsonPath("$[0].name", is(packages.get(0).getName())))
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is(packages.get(0).getName())))
                 .andExpect(jsonPath("$[1].id", is(packages.get(1).getId())));
 
         verify(packService).getByState(anyString());
@@ -96,7 +100,8 @@ public class PackControllerTest {
         when(packService.setState(id, state)).thenReturn(pack);
         ResultActions resultActions = mvc.perform(patch("/packages/"+id).param("state", state));
 
-        resultActions.andExpect(jsonPath("$.id", is(pack.getId())))
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(pack.getId())))
                 .andExpect(jsonPath("$.state", is(state)));
 
         verify(packService).setState(anyString(), anyString());
@@ -116,10 +121,32 @@ public class PackControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(pack)));
 
-        resultActions.andExpect(jsonPath("$.id", is(pack.getId())))
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(pack.getId())))
                 .andExpect(jsonPath("$.state", is(pack.getState())));
 
         verify(packService).add(any());
+
+    }
+
+    @Test
+    public void should_set_package_time() throws Exception {
+        Pack pack = new Pack();
+        pack.setId("3412435");
+        pack.setName("test");
+        pack.setPhone("12574474367");
+        pack.setState("已预约");
+        pack.setTime(new Date());
+
+        when(packService.setTime(anyString(), any())).thenReturn(pack);
+        ResultActions resultActions = mvc.perform(patch("/packages/3412435")
+                .param("time", "2019-02-12 18:20:00"));
+
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(pack.getId())))
+                .andExpect(jsonPath("$.state", is(pack.getState())));
+
+        verify(packService).setTime(anyString(), anyString());
 
     }
 

@@ -5,6 +5,7 @@ import com.oocl.ita.servie.PackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -32,5 +33,10 @@ public class PackController {
     @PostMapping
     public Pack addPackage(@RequestBody Pack pack) {
         return packService.add(pack);
+    }
+
+    @PatchMapping(path = "/{id}", params = "time")
+    public Pack setPackageTime(@PathVariable String id, @RequestParam String time) {
+        return packService.setTime(id, time);
     }
 }
