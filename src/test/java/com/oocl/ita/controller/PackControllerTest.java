@@ -14,12 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -136,17 +134,17 @@ public class PackControllerTest {
         pack.setName("test");
         pack.setPhone("12574474367");
         pack.setState("已预约");
-        pack.setTime(new Date());
+        pack.setTime(System.currentTimeMillis());
 
-        when(packService.setTime(anyString(), any())).thenReturn(pack);
+        when(packService.setTime(anyString(), anyLong())).thenReturn(pack);
         ResultActions resultActions = mvc.perform(patch("/packages/3412435")
-                .param("time", "2019-02-12 18:20:00"));
+                .param("time", String.valueOf(System.currentTimeMillis())));
 
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(pack.getId())))
                 .andExpect(jsonPath("$.state", is(pack.getState())));
 
-        verify(packService).setTime(anyString(), anyString());
+        verify(packService).setTime(anyString(), anyLong());
 
     }
 

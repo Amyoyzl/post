@@ -35,7 +35,7 @@ public class PackController {
     }
 
     @PatchMapping(path = "/{id}", params = "time")
-    public Pack setPackageTime(@PathVariable String id, @RequestParam String time) {
+    public Pack setPackageTime(@PathVariable String id, @RequestParam long time) {
         return packService.setTime(id, time);
     }
 }

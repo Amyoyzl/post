@@ -5,9 +5,6 @@ import com.oocl.ita.repository.PackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +24,7 @@ public class PackService {
 
     public Pack setState(String id, String state) {
         Optional<Pack> optionalPack = repository.findById(id);
-        if(optionalPack.isPresent()) {
+        if (optionalPack.isPresent()) {
             Pack pack = optionalPack.get();
             pack.setState(state);
             return repository.save(pack);
@@ -39,16 +36,11 @@ public class PackService {
         return repository.save(pack);
     }
 
-    public Pack setTime(String id, String time) {
+    public Pack setTime(String id, long time) {
         Optional<Pack> optionalPack = repository.findById(id);
-        if(optionalPack.isPresent()) {
+        if (optionalPack.isPresent()) {
             Pack pack = optionalPack.get();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            try {
-                pack.setTime(simpleDateFormat.parse(time));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            pack.setTime(time);
             return repository.save(pack);
         }
         return null;
