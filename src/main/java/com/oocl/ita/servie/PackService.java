@@ -16,4 +16,8 @@ public class PackService {
     public List<Pack> getAll() {
         return repository.findAll();
     }
+
+    public List<Pack> getByState(String state) {
+        return repository.findByState(state);
+    }
 }

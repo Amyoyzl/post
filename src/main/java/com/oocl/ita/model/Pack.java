@@ -16,6 +16,7 @@ public class Pack {
     @Column(columnDefinition = "char(11)")
     private String phone;
     private String state;
+    private double weight;
     private Date time;
 
     public String getId() {
@@ -56,5 +57,13 @@ public class Pack {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,6 +52,32 @@ public class PackControllerTest {
                 .andExpect(jsonPath("$[1].id", is(packages.get(1).getId())));
 
         verify(packService).getAll();
-
     }
+
+    @Test
+    public void should_return_consistent_packages_given_state() throws Exception {
+        Pack pack1 = new Pack();
+        pack1.setId("123434");
+        pack1.setName("test");
+        pack1.setState("已预约");
+        pack1.setPhone("25445134431");
+        Pack pack2 = new Pack();
+        pack2.setId("123445");
+        pack2.setName("test");
+        pack2.setState("已预约");
+        pack2.setPhone("25445634431");
+        List<Pack> packages = new ArrayList<>();
+        packages.add(pack1);
+        packages.add(pack2);
+
+        String state = "已预约";
+        when(packService.getByState(state)).thenReturn(packages);
+        ResultActions resultActions = mvc.perform(get("/packages").param("state", "已预约"));
+
+        resultActions.andExpect(jsonPath("$[0].name", is(packages.get(0).getName())))
+                .andExpect(jsonPath("$[1].id", is(packages.get(1).getId())));
+
+        verify(packService).getByState(anyString());
+    }
+
 }
